@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal Corporativo · Entorno de pruebas</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root{
+    --bg:#f4f6f8; --surface:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#dde2e8;
+    --brand:#0f5c4d; --brand-ink:#ffffff; --brand-soft:#e3f1ee; --warn-bg:#fff4d6; --warn-ink:#6b4e00;
+    --err-bg:#fde8e8; --err-ink:#8a1c1c; --ok:#127a52;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#11161c; --surface:#1a222b; --ink:#e6ebf0; --muted:#9aa6b3; --line:#2c3743;
+      --brand:#3fb59b; --brand-ink:#0d1a17; --brand-soft:#173a33; --warn-bg:#3a3010; --warn-ink:#f3d98a;
+      --err-bg:#3d1717; --err-ink:#f4b4b4; --ok:#5cd1a3;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  .lab{background:var(--warn-bg);color:var(--warn-ink);font-size:.85rem;text-align:center;padding:.5rem 1rem}
+  header{background:var(--surface);border-bottom:1px solid var(--line)}
+  .bar{max-width:1040px;margin:0 auto;padding:.9rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+  .logo{display:flex;align-items:center;gap:.6rem;font-weight:700}
+  .mark{width:34px;height:34px;border-radius:8px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:800}
+  main{max-width:1040px;margin:0 auto;padding:2rem 1rem 3rem}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.5rem}
+  .hero{display:grid;gap:1.5rem;grid-template-columns:1.2fr 1fr;align-items:start}
+  @media (max-width:760px){.hero{grid-template-columns:1fr}}
+  h1{font-size:1.6rem;margin:.2rem 0 .6rem}
+  h2{font-size:1.1rem;margin:0 0 .8rem}
+  p{margin:.4rem 0}
+  .muted{color:var(--muted)}
+  button,.btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:.75rem 1.2rem;cursor:pointer;background:var(--brand);color:var(--brand-ink);text-decoration:none;display:inline-block}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  ol{padding-left:1.2rem;margin:.4rem 0}
+  li{margin:.3rem 0}
+  .msg{border-radius:8px;padding:.8rem 1rem;margin-bottom:1rem;font-size:.95rem}
+  .msg.err{background:var(--err-bg);color:var(--err-ink)}
+  .msg.warn{background:var(--warn-bg);color:var(--warn-ink)}
+  .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-top:1rem}
+  .mod{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.1rem}
+  .mod h3{margin:0 0 .3rem;font-size:1rem}
+  .tag{display:inline-block;font-size:.75rem;padding:.15rem .5rem;border-radius:99px;background:var(--brand-soft);color:var(--ink);margin-top:.5rem}
+  dl{display:grid;grid-template-columns:auto 1fr;gap:.35rem 1rem;margin:0}
+  dt{color:var(--muted)}
+  dd{margin:0;font-weight:600;word-break:break-all}
+  .ok{color:var(--ok);font-weight:700}
+  .row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
+  .hidden{display:none !important}
+  footer{max-width:1040px;margin:0 auto;padding:0 1rem 2rem;font-size:.8rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="lab">Entorno de pruebas académico para una investigación universitaria. Usa solo la cuenta de prueba que te entregó el investigador.</div>
+
+<header>
+  <div class="bar">
+    <div class="logo"><div class="mark">PC</div><span id="portalName">Portal Corporativo</span></div>
+    <div id="userChip" class="muted hidden"></div>
+  </div>
+</header>
+
+<main>
+  <div id="alert" class="msg hidden"></div>
+
+  <!-- Sin sesión -->
+  <section id="viewOut" class="hero hidden">
+    <div class="card">
+      <h1>Bienvenido al portal</h1>
+      <p class="muted">Para entrar necesitas tu cuenta corporativa de prueba y tu segundo factor de autenticación.</p>
+      <div class="row"><button id="btnLogin">Iniciar sesión con cuenta corporativa</button></div>
+    </div>
+    <div class="card">
+      <h2>Qué va a pasar</h2>
+      <ol>
+        <li>Te llevaremos a la página de inicio de sesión de Microsoft.</li>
+        <li>Escribe el usuario y la contraseña de prueba que te entregaron.</li>
+        <li>Confirma tu identidad con el segundo factor asignado (código SMS, código de la app o passkey).</li>
+        <li>Volverás aquí ya dentro del portal.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Con sesión -->
+  <section id="viewIn" class="hidden">
+    <div class="card">
+      <p class="ok">Inicio de sesión completado</p>
+      <h1 id="hello">Hola</h1>
+      <p class="muted">Este es un portal de demostración. Los módulos no procesan información real.</p>
+      <div class="row">
+        <a id="btnForm" class="btn hidden" target="_blank" rel="noopener">Responder el cuestionario</a>
+        <button id="btnLogout" class="btn-ghost">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="mod"><h3>Recursos Humanos</h3><p class="muted">Boletas, vacaciones y datos del colaborador.</p><span class="tag">Módulo de demostración</span></div>
+      <div class="mod"><h3>Finanzas</h3><p class="muted">Aprobaciones y reportes de gastos.</p><span class="tag">Módulo de demostración</span></div>
+      <div class="mod"><h3>Inventario</h3><p class="muted">Consulta de existencias y movimientos.</p><span class="tag">Módulo de demostración</span></div>
+      <div class="mod"><h3>Documentos</h3><p class="muted">Repositorio de documentos internos.</p><span class="tag">Módulo de demostración</span></div>
+    </div>
+
+    <div class="card" style="margin-top:1rem">
+      <h2>Datos de esta sesión</h2>
+      <dl>
+        <dt>Usuario</dt><dd id="dUser">-</dd>
+        <dt>Hora de autenticación</dt><dd id="dTime">-</dd>
+        <dt>Tiempo total del inicio de sesión</dt><dd id="dDur">-</dd>
+      </dl>
+      <p class="muted" style="font-size:.85rem;margin-top:.8rem">El tiempo total va desde que pulsaste "Iniciar sesión" hasta que volviste al portal, e incluye el segundo factor. Es una referencia complementaria a los registros de Entra ID.</p>
+    </div>
+  </section>
+</main>
+
+<footer>Portal ficticio creado para fines académicos. No está asociado a ninguna empresa real.</footer>
+
+<!-- MSAL.js 2.35.0 desde la CDN oficial de Microsoft, con verificación de integridad -->
+<script src="https://alcdn.msauth.net/browser/2.35.0/js/msal-browser.min.js"
+        integrity="sha384-PARf28kmic36Ve+O3DnUerRXFtOQ7ZDqRDGpLcbljly5/N39T2OV3kt3QsWOKeAX"
+        crossorigin="anonymous"></script>
+<script src="config.js"></script>
+<script>
+(function () {
+  const cfg = window.PORTAL_CONFIG || {};
+  const $ = (id) => document.getElementById(id);
+  const show = (id, on) => $(id).classList.toggle("hidden", !on);
+
+  function alertMsg(text, kind) {
+    const a = $("alert");
+    a.textContent = text;
+    a.className = "msg " + (kind || "err");
+  }
+
+  if (cfg.NOMBRE_PORTAL) { $("portalName").textContent = cfg.NOMBRE_PORTAL; }
+
+  // 1. Validaciones previas
+  const notConfigured = !cfg.CLIENT_ID || !cfg.TENANT_ID || cfg.CLIENT_ID.startsWith("PEGA_") || cfg.TENANT_ID.startsWith("PEGA_");
+  if (notConfigured) {
+    alertMsg("El portal aún no está configurado: completa CLIENT_ID y TENANT_ID en el archivo config.js.", "warn");
+    show("viewOut", true);
+    $("btnLogin").disabled = true;
+    return;
+  }
+  if (!window.msal) {
+    alertMsg("No se pudo cargar la librería de inicio de sesión de Microsoft. Revisa tu conexión o si alguna extensión del navegador bloquea alcdn.msauth.net.");
+    show("viewOut", true);
+    $("btnLogin").disabled = true;
+    return;
+  }
+
+  // 2. Configuración de MSAL
+  const redirectUri = window.location.origin + window.location.pathname.replace(/index\.html$/, "");
+  const app = new msal.PublicClientApplication({
+    auth: {
+      clientId: cfg.CLIENT_ID,
+      authority: "https://login.microsoftonline.com/" + cfg.TENANT_ID,
+      redirectUri: redirectUri,
+      postLogoutRedirectUri: redirectUri,
+      navigateToLoginRequestUrl: false
+    },
+    cache: { cacheLocation: "sessionStorage" }
+  });
+
+  function fmtTime(epochSeconds) {
+    if (!epochSeconds) return "-";
+    return new Date(epochSeconds * 1000).toLocaleString("es-PE", { dateStyle: "short", timeStyle: "medium" });
+  }
+
+  function renderSignedIn(account, durationSec) {
+    const c = account.idTokenClaims || {};
+    const name = account.name || c.name || account.username;
+    $("hello").textContent = "Hola, " + name;
+    $("userChip").textContent = account.username;
+    $("dUser").textContent = account.username;
+    $("dTime").textContent = fmtTime(c.auth_time || c.iat);
+    const stored = sessionStorage.getItem("pc_last_duration");
+    const d = durationSec != null ? durationSec : (stored ? Number(stored) : null);
+    $("dDur").textContent = d != null ? d.toFixed(1) + " s" : "-";
+    if (cfg.FORM_URL) { $("btnForm").href = cfg.FORM_URL; show("btnForm", true); }
+    show("userChip", true);
+    show("viewOut", false);
+    show("viewIn", true);
+  }
+
+  function renderSignedOut() {
+    show("userChip", false);
+    show("viewIn", false);
+    show("viewOut", true);
+  }
+
+  function friendlyError(e) {
+    const code = (e && (e.errorCode || e.name)) || "";
+    const text = (e && e.errorMessage) || (e && e.message) || "";
+    if (/user_cancelled|AADSTS50126/.test(code + text)) return "El inicio de sesión se canceló o la contraseña no es correcta. Inténtalo de nuevo.";
+    if (/AADSTS50158|AADSTS53003/.test(text)) return "Una política de acceso bloqueó el inicio de sesión. Avisa al investigador.";
+    if (/AADSTS50011/.test(text)) return "La dirección del portal no coincide con la registrada en Entra ID (URI de redirección). Avisa al investigador.";
+    return "No se pudo completar el inicio de sesión. Detalle técnico: " + (code || "") + " " + text.split("\n")[0];
+  }
+
+  // 3. Flujo principal
+  async function start() {
+    try {
+      if (typeof app.initialize === "function") { await app.initialize(); }
+      const result = await app.handleRedirectPromise();
+      if (result && result.account) {
+        app.setActiveAccount(result.account);
+        const t0 = Number(sessionStorage.getItem("pc_login_t0"));
+        sessionStorage.removeItem("pc_login_t0");
+        const dur = t0 ? (Date.now() - t0) / 1000 : null;
+        if (dur != null) { sessionStorage.setItem("pc_last_duration", String(dur)); }
+        renderSignedIn(result.account, dur);
+        return;
+      }
+      const accounts = app.getAllAccounts();
+      if (accounts.length) {
+        app.setActiveAccount(accounts[0]);
+        renderSignedIn(accounts[0], null);
+      } else {
+        renderSignedOut();
+      }
+    } catch (e) {
+      sessionStorage.removeItem("pc_login_t0");
+      alertMsg(friendlyError(e));
+      renderSignedOut();
+    }
+  }
+
+  $("btnLogin").addEventListener("click", function () {
+    sessionStorage.setItem("pc_login_t0", String(Date.now()));
+    // prompt=login obliga a autenticarse de nuevo en cada intento
+    app.loginRedirect({ scopes: ["openid", "profile"], prompt: "login" });
+  });
+
+  $("btnLogout").addEventListener("click", function () {
+    sessionStorage.removeItem("pc_last_duration");
+    app.logoutRedirect({ account: app.getActiveAccount(), postLogoutRedirectUri: redirectUri });
+  });
+
+  start();
+})();
+</script>
+</body>
+</html>
